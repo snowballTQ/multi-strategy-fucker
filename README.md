@@ -54,6 +54,176 @@ Outputs are written under:
 %USERPROFILE%\strategy_workbench_outputs\demo_run
 ```
 
+## Using the Colab form
+
+The Colab notebook is designed so most people do not need to edit a raw config dictionary.
+
+The inputs are grouped like this:
+
+### 1. Global Settings
+
+- `START_DATE`, `END_DATE`
+  - backtest date range
+- `COMMISSION_RATE`
+  - one-way commission as a decimal
+  - example: `0.001` = 0.10%
+- `TAX_RATE`
+  - tax rate
+  - example: `0.22` = 22%
+- `EXPENSE_RATIO`
+  - annual expense ratio assumption
+- `BORROW_SPREAD`
+  - borrow spread added on top of the funding rate assumption
+- `OUTPUT_NAME`
+  - folder name for the run outputs
+
+### 2. Strategy slots
+
+The notebook includes three strategy slots out of the box:
+
+- `Strategy 1`
+- `Strategy 2`
+- `Strategy 3`
+
+Each slot can be enabled or disabled independently.
+
+That means you can:
+
+- run only one strategy
+- compare two strategies side by side
+- compare three strategies in one pass
+
+### 3. What is a dropdown vs a number input
+
+Dropdown-style inputs:
+
+- `BASE_SERIES`
+- `EXIT_DESTINATION`
+- `ENTRY_COMBINE`
+- `EXIT_COMBINE`
+- `RULE_TYPE`
+- `RULE_SOURCE`
+
+Numeric inputs:
+
+- leverage
+- moving-average windows
+- take-profit trigger multiples
+- take-profit sell fractions
+- trailing-stop drawdown values
+
+### 4. How the window fields work
+
+The same form uses `WINDOW1`, `WINDOW2`, and `WINDOW3` for different rule types.
+
+- `price_above_sma`, `price_below_sma`
+  - use `WINDOW1` only
+  - example: `WINDOW1 = 200`
+- `fast_above_slow`, `fast_below_slow`
+  - use `WINDOW1 = fast`, `WINDOW2 = slow`
+  - example: `50`, `200`
+- `sma_chain_above`, `sma_chain_below`
+  - use `WINDOW1 / WINDOW2 / WINDOW3` in order
+  - example: `3`, `161`, `185`
+- `always_true`
+  - ignores the window fields
+- `none`
+  - use this to disable `RULE2`
+  - leave the unused windows as `0`
+
+### 5. Combine modes
+
+- `single`
+  - use only `RULE1`
+- `all_of`
+  - both rules must be true
+- `any_of`
+  - either rule can be true
+
+### 6. Partial exits
+
+Each strategy slot includes up to three take-profit steps:
+
+- `TP1`
+- `TP2`
+- `TP3`
+
+For each one you can set:
+
+- whether it is enabled
+- the trigger multiple
+- the sell fraction
+- the destination asset
+
+Example:
+
+- `TP1_TRIGGER = 1.15`
+- `TP1_SELL_FRACTION = 0.50`
+- `TP1_DESTINATION = cash`
+
+This means:
+
+- when the position reaches +15%
+- sell 50% of the remaining position
+- send the proceeds to cash
+
+### 7. Trailing stop
+
+Each strategy slot also includes trailing-stop controls:
+
+- `ENABLE_TRAILING`
+- `TRAILING_AFTER_FIRST_TP`
+- `TRAILING_DRAWDOWN`
+- `TRAILING_DESTINATION`
+
+Example:
+
+- `ENABLE_TRAILING = True`
+- `TRAILING_AFTER_FIRST_TP = True`
+- `TRAILING_DRAWDOWN = 0.15`
+
+This means:
+
+- trailing stop is active
+- it turns on only after the first take-profit
+- the remaining position is closed if it falls 15% from its post-activation peak
+
+### 8. Common starter setups
+
+Price vs 200 SMA:
+
+- `ENTRY_RULE1_TYPE = price_above_sma`
+- `ENTRY_RULE1_WINDOW1 = 200`
+- `EXIT_RULE1_TYPE = price_below_sma`
+- `EXIT_RULE1_WINDOW1 = 200`
+
+Dual-SMA crossover:
+
+- `ENTRY_RULE1_TYPE = fast_above_slow`
+- `ENTRY_RULE1_WINDOW1 = 50`
+- `ENTRY_RULE1_WINDOW2 = 200`
+- `EXIT_RULE1_TYPE = fast_below_slow`
+- `EXIT_RULE1_WINDOW1 = 50`
+- `EXIT_RULE1_WINDOW2 = 200`
+
+3-161-185 chain:
+
+- `ENTRY_COMBINE = all_of`
+- `ENTRY_RULE1_TYPE = price_above_sma`
+- `ENTRY_RULE1_WINDOW1 = 200`
+- `ENTRY_RULE2_TYPE = sma_chain_above`
+- `ENTRY_RULE2_WINDOW1 = 3`
+- `ENTRY_RULE2_WINDOW2 = 161`
+- `ENTRY_RULE2_WINDOW3 = 185`
+
+### 9. Practical tips
+
+- Start with one or two strategies before turning on all three slots.
+- Leave `RULE2_TYPE = none` if you do not need a second rule.
+- For `fast_above_slow`, the natural pattern is usually `WINDOW1 < WINDOW2`.
+- If you are not sure where proceeds should go after a sale, start with `cash`.
+- The notebook form omits `confirm_days` on purpose to keep the UI simpler.
+
 ## Example config shape
 
 The top-level config contains global settings and a `strategies` list.
