@@ -9,6 +9,9 @@ from pathlib import Path
 from .data_loader import get_latest_value
 
 
+CSV_ENCODING = "utf-8-sig"
+
+
 @dataclass
 class MetricRow:
     name: str
@@ -243,7 +246,7 @@ def compute_drawdown_episodes(strategy_name: str, curve: list[tuple[date, float]
 
 
 def write_metrics_csv(path: Path, rows: list[MetricRow]) -> None:
-    with path.open("w", encoding="utf-8", newline="") as handle:
+    with path.open("w", encoding=CSV_ENCODING, newline="") as handle:
         writer = csv.writer(handle)
         writer.writerow(
             [
@@ -285,7 +288,7 @@ def write_metrics_csv(path: Path, rows: list[MetricRow]) -> None:
 
 
 def write_annual_returns_csv(path: Path, annual_by_strategy: dict[str, list[dict[str, object]]]) -> None:
-    with path.open("w", encoding="utf-8", newline="") as handle:
+    with path.open("w", encoding=CSV_ENCODING, newline="") as handle:
         writer = csv.writer(handle)
         writer.writerow(["strategy", "year", "start_date", "end_date", "period_type", "return"])
         for strategy_name, rows in annual_by_strategy.items():
@@ -303,7 +306,7 @@ def write_annual_returns_csv(path: Path, annual_by_strategy: dict[str, list[dict
 
 
 def write_drawdowns_csv(path: Path, drawdowns_by_strategy: dict[str, list[DrawdownEpisode]]) -> None:
-    with path.open("w", encoding="utf-8", newline="") as handle:
+    with path.open("w", encoding=CSV_ENCODING, newline="") as handle:
         writer = csv.writer(handle)
         writer.writerow(
             [
@@ -336,7 +339,7 @@ def write_drawdowns_csv(path: Path, drawdowns_by_strategy: dict[str, list[Drawdo
 
 
 def write_equity_curves_csv(path: Path, curves_by_strategy: dict[str, list[tuple[date, float]]]) -> None:
-    with path.open("w", encoding="utf-8", newline="") as handle:
+    with path.open("w", encoding=CSV_ENCODING, newline="") as handle:
         writer = csv.writer(handle)
         writer.writerow(["strategy", "date", "equity"])
         for strategy_name, curve in curves_by_strategy.items():
@@ -346,12 +349,12 @@ def write_equity_curves_csv(path: Path, curves_by_strategy: dict[str, list[tuple
 
 def write_rows_csv(path: Path, rows: list[dict[str, object]]) -> None:
     if not rows:
-        with path.open("w", encoding="utf-8", newline="") as handle:
+        with path.open("w", encoding=CSV_ENCODING, newline="") as handle:
             writer = csv.writer(handle)
             writer.writerow(["empty"])
         return
 
-    with path.open("w", encoding="utf-8", newline="") as handle:
+    with path.open("w", encoding=CSV_ENCODING, newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0].keys()))
         writer.writeheader()
         writer.writerows(rows)

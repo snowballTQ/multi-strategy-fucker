@@ -610,7 +610,7 @@ def simulate_strategy(
                 "strategy": name,
                 "trigger_gain_multiple": f"{trigger:.6f}",
                 "sell_fraction": f"{float(row['sell_fraction']):.6f}",
-                "destination": canonical_asset_name(row.get("destination", "cash"), base_series_name),
+                "destination": str(row.get("destination", "cash")).lower(),
                 "hits": tp_counts[str(trigger)],
             }
         )
@@ -683,7 +683,7 @@ def run_from_config(config: dict, output_name: str | None = None) -> dict[str, o
     analytics.write_equity_curves_csv(curves_path, curves_by_strategy)
     analytics.write_rows_csv(trades_path, trade_rows)
     analytics.write_rows_csv(take_profit_path, take_profit_rows)
-    config_path.write_text(json.dumps(config, indent=2), encoding="utf-8")
+    config_path.write_text(json.dumps(config, indent=2, ensure_ascii=False), encoding="utf-8")
 
     return {
         "output_dir": output_dir,
