@@ -2,6 +2,18 @@
 
 `Strategy Workbench` is a separate, config-driven backtesting project for testing more complex rule sets than a simple one-strategy script.
 
+Quick links:
+
+- GitHub: [snowballTQ/multi-strategy-fucker](https://github.com/snowballTQ/multi-strategy-fucker)
+- Colab: [Open in Colab](https://colab.research.google.com/github/snowballTQ/multi-strategy-fucker/blob/main/strategy_workbench_colab.ipynb)
+
+The Colab notebook is set up as a guided form:
+
+- dates use calendar pickers
+- leverage, windows, take-profit levels, and trailing-stop values are numeric inputs
+- base series, rule types, sources, and destinations are dropdowns
+- three strategy slots are provided out of the box
+
 It is built for cases like:
 
 - comparing two or more strategies in the same run
