@@ -7,7 +7,7 @@ Quick links:
 - GitHub: [snowballTQ/multi-strategy-fucker](https://github.com/snowballTQ/multi-strategy-fucker)
 - Colab: [Open in Colab](https://colab.research.google.com/github/snowballTQ/multi-strategy-fucker/blob/main/strategy_workbench_colab.ipynb)
 
-The Colab notebook is set up as a guided form:
+The Colab notebook is set up as a guided form with Korean-friendly field labels:
 
 - dates use calendar pickers
 - leverage, windows, take-profit levels, and trailing-stop values are numeric inputs
@@ -58,32 +58,32 @@ Outputs are written under:
 
 The Colab notebook is designed so most people do not need to edit a raw config dictionary.
 
-The inputs are grouped like this:
+The user-facing fields are now written in Korean. The engine still converts them to the internal English config format automatically.
 
-### 1. Global Settings
+### 1. Common settings
 
-- `START_DATE`, `END_DATE`
+- `시작일`, `종료일`
   - backtest date range
-- `COMMISSION_RATE`
+- `편도수수료`
   - one-way commission as a decimal
   - example: `0.001` = 0.10%
-- `TAX_RATE`
+- `세율`
   - tax rate
   - example: `0.22` = 22%
-- `EXPENSE_RATIO`
+- `연운용보수`
   - annual expense ratio assumption
-- `BORROW_SPREAD`
+- `차입스프레드`
   - borrow spread added on top of the funding rate assumption
-- `OUTPUT_NAME`
+- `결과폴더이름`
   - folder name for the run outputs
 
 ### 2. Strategy slots
 
 The notebook includes three strategy slots out of the box:
 
-- `Strategy 1`
-- `Strategy 2`
-- `Strategy 3`
+- `전략 1`
+- `전략 2`
+- `전략 3`
 
 Each slot can be enabled or disabled independently.
 
@@ -97,12 +97,16 @@ That means you can:
 
 Dropdown-style inputs:
 
-- `BASE_SERIES`
-- `EXIT_DESTINATION`
-- `ENTRY_COMBINE`
-- `EXIT_COMBINE`
-- `RULE_TYPE`
-- `RULE_SOURCE`
+- `기준시계열`
+- `전량청산후자금`
+- `진입결합`
+- `청산결합`
+- `진입규칙X_유형`
+- `청산규칙X_유형`
+- `진입규칙X_기준`
+- `청산규칙X_기준`
+- `익절 자금이동`
+- `트레일링 자금이동`
 
 Numeric inputs:
 
@@ -112,41 +116,41 @@ Numeric inputs:
 - take-profit sell fractions
 - trailing-stop drawdown values
 
-### 4. How the window fields work
+### 4. How the period fields work
 
-The same form uses `WINDOW1`, `WINDOW2`, and `WINDOW3` for different rule types.
+The same form uses `기간1`, `기간2`, and `기간3` for different rule types.
 
-- `price_above_sma`, `price_below_sma`
-  - use `WINDOW1` only
-  - example: `WINDOW1 = 200`
-- `fast_above_slow`, `fast_below_slow`
-  - use `WINDOW1 = fast`, `WINDOW2 = slow`
+- `가격>SMA`, `가격<SMA`
+  - use `기간1` only
+  - example: `기간1 = 200`
+- `빠른선>느린선`, `빠른선<느린선`
+  - use `기간1 = fast`, `기간2 = slow`
   - example: `50`, `200`
-- `sma_chain_above`, `sma_chain_below`
-  - use `WINDOW1 / WINDOW2 / WINDOW3` in order
+- `이평선정배열`, `이평선역배열`
+  - use `기간1 / 기간2 / 기간3` in order
   - example: `3`, `161`, `185`
-- `always_true`
-  - ignores the window fields
-- `none`
-  - use this to disable `RULE2`
-  - leave the unused windows as `0`
+- `항상참`
+  - ignores the period fields
+- `사용안함`
+  - use this to disable rule 2
+  - leave the unused periods as `0`
 
 ### 5. Combine modes
 
-- `single`
-  - use only `RULE1`
-- `all_of`
+- `규칙1만`
+  - use only rule 1
+- `둘다만족`
   - both rules must be true
-- `any_of`
+- `하나만만족`
   - either rule can be true
 
 ### 6. Partial exits
 
 Each strategy slot includes up to three take-profit steps:
 
-- `TP1`
-- `TP2`
-- `TP3`
+- `1차익절`
+- `2차익절`
+- `3차익절`
 
 For each one you can set:
 
@@ -157,9 +161,9 @@ For each one you can set:
 
 Example:
 
-- `TP1_TRIGGER = 1.15`
-- `TP1_SELL_FRACTION = 0.50`
-- `TP1_DESTINATION = cash`
+- `1차익절_배수 = 1.15`
+- `1차익절_매도비율 = 0.50`
+- `1차익절_자금이동 = 현금`
 
 This means:
 
@@ -171,16 +175,16 @@ This means:
 
 Each strategy slot also includes trailing-stop controls:
 
-- `ENABLE_TRAILING`
-- `TRAILING_AFTER_FIRST_TP`
-- `TRAILING_DRAWDOWN`
-- `TRAILING_DESTINATION`
+- `전략X_트레일링사용`
+- `전략X_트레일링_첫익절후활성`
+- `전략X_트레일링_하락폭`
+- `전략X_트레일링_자금이동`
 
 Example:
 
-- `ENABLE_TRAILING = True`
-- `TRAILING_AFTER_FIRST_TP = True`
-- `TRAILING_DRAWDOWN = 0.15`
+- `전략X_트레일링사용 = True`
+- `전략X_트레일링_첫익절후활성 = True`
+- `전략X_트레일링_하락폭 = 0.15`
 
 This means:
 
@@ -192,36 +196,36 @@ This means:
 
 Price vs 200 SMA:
 
-- `ENTRY_RULE1_TYPE = price_above_sma`
-- `ENTRY_RULE1_WINDOW1 = 200`
-- `EXIT_RULE1_TYPE = price_below_sma`
-- `EXIT_RULE1_WINDOW1 = 200`
+- `진입규칙1_유형 = 가격>SMA`
+- `진입규칙1_기간1 = 200`
+- `청산규칙1_유형 = 가격<SMA`
+- `청산규칙1_기간1 = 200`
 
 Dual-SMA crossover:
 
-- `ENTRY_RULE1_TYPE = fast_above_slow`
-- `ENTRY_RULE1_WINDOW1 = 50`
-- `ENTRY_RULE1_WINDOW2 = 200`
-- `EXIT_RULE1_TYPE = fast_below_slow`
-- `EXIT_RULE1_WINDOW1 = 50`
-- `EXIT_RULE1_WINDOW2 = 200`
+- `진입규칙1_유형 = 빠른선>느린선`
+- `진입규칙1_기간1 = 50`
+- `진입규칙1_기간2 = 200`
+- `청산규칙1_유형 = 빠른선<느린선`
+- `청산규칙1_기간1 = 50`
+- `청산규칙1_기간2 = 200`
 
 3-161-185 chain:
 
-- `ENTRY_COMBINE = all_of`
-- `ENTRY_RULE1_TYPE = price_above_sma`
-- `ENTRY_RULE1_WINDOW1 = 200`
-- `ENTRY_RULE2_TYPE = sma_chain_above`
-- `ENTRY_RULE2_WINDOW1 = 3`
-- `ENTRY_RULE2_WINDOW2 = 161`
-- `ENTRY_RULE2_WINDOW3 = 185`
+- `진입결합 = 둘다만족`
+- `진입규칙1_유형 = 가격>SMA`
+- `진입규칙1_기간1 = 200`
+- `진입규칙2_유형 = 이평선정배열`
+- `진입규칙2_기간1 = 3`
+- `진입규칙2_기간2 = 161`
+- `진입규칙2_기간3 = 185`
 
 ### 9. Practical tips
 
 - Start with one or two strategies before turning on all three slots.
-- Leave `RULE2_TYPE = none` if you do not need a second rule.
-- For `fast_above_slow`, the natural pattern is usually `WINDOW1 < WINDOW2`.
-- If you are not sure where proceeds should go after a sale, start with `cash`.
+- Leave `사용안함` on rule 2 if you do not need a second rule.
+- For `빠른선>느린선`, the natural pattern is usually `기간1 < 기간2`.
+- If you are not sure where proceeds should go after a sale, start with `현금`.
 - The notebook form omits `confirm_days` on purpose to keep the UI simpler.
 
 ## Example config shape
@@ -244,14 +248,12 @@ The top-level config contains global settings and a `strategies` list.
       "entry": {
         "type": "price_above_sma",
         "source": "traded",
-        "window": 200,
-        "confirm_days": 3
+        "window": 200
       },
       "exit": {
         "type": "price_below_sma",
         "source": "traded",
-        "window": 200,
-        "confirm_days": 1
+        "window": 200
       }
     }
   ]
@@ -286,8 +288,6 @@ The top-level config contains global settings and a `strategies` list.
 - `source`
   - `traded` means the rule uses the actual traded series for that strategy
   - `base` means the rule uses the underlying base series
-- `confirm_days`
-  - consecutive days required before the rule is treated as active
 
 ## Partial exits
 
