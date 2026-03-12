@@ -1,0 +1,92 @@
+{
+  "start_date": "1985-10-01",
+  "end_date": "2026-03-09",
+  "commission_rate": 0.001,
+  "tax_rate": 0.22,
+  "expense_ratio": 0.0095,
+  "borrow_spread": 1.0,
+  "strategies": [
+    {
+      "name": "Price vs 200 SMA | 3x",
+      "base_series": "ndx",
+      "leverage": 3.0,
+      "include_financing_cost": true,
+      "exit_destination": "cash",
+      "entry": {
+        "type": "price_above_sma",
+        "source": "traded",
+        "window": 200,
+        "confirm_days": 3
+      },
+      "exit": {
+        "type": "price_below_sma",
+        "source": "traded",
+        "window": 200,
+        "confirm_days": 1
+      },
+      "take_profit_ladder": [],
+      "trailing_stop": {
+        "enabled": false
+      }
+    },
+    {
+      "name": "3-161-185 + Partial Exits | 3x",
+      "base_series": "ndx",
+      "leverage": 3.0,
+      "include_financing_cost": true,
+      "exit_destination": "cash",
+      "entry": {
+        "type": "all_of",
+        "rules": [
+          {
+            "type": "price_above_sma",
+            "source": "traded",
+            "window": 200,
+            "confirm_days": 3
+          },
+          {
+            "type": "sma_chain_above",
+            "source": "traded",
+            "windows": [3, 161, 185],
+            "confirm_days": 1
+          }
+        ]
+      },
+      "exit": {
+        "type": "any_of",
+        "rules": [
+          {
+            "type": "price_below_sma",
+            "source": "traded",
+            "window": 200,
+            "confirm_days": 1
+          },
+          {
+            "type": "sma_chain_below",
+            "source": "traded",
+            "windows": [3, 161, 185],
+            "confirm_days": 1
+          }
+        ]
+      },
+      "take_profit_ladder": [
+        {
+          "trigger_gain_multiple": 1.15,
+          "sell_fraction": 0.5,
+          "destination": "cash"
+        },
+        {
+          "trigger_gain_multiple": 1.68,
+          "sell_fraction": 0.35,
+          "destination": "spy"
+        }
+      ],
+      "trailing_stop": {
+        "enabled": true,
+        "activate_after_first_take_profit": true,
+        "drawdown_from_peak": 0.15,
+        "destination": "cash"
+      }
+    }
+  ]
+}
